@@ -15,14 +15,9 @@ public class Main {
 
         myFrame.getContentPane().add(jPanel);
 
-	    MyBalls myBalls = new MyBalls(jPanel, myFrame);
-	    Thread newThread = new Thread(myBalls);
-
-        MyBalls myBalls2 = new MyBalls(jPanel, myFrame);
-        Thread newThread2 = new Thread(myBalls2);
-
-        newThread.start();
-        newThread2.start();
+        for(int i=0;i<3;i++) {
+            new MyBalls(jPanel, myFrame).start();
+        }
     }
 }
 
@@ -54,19 +49,25 @@ class MyBalls extends Thread{
     public void paint(Graphics g){
         g.setColor(Color.BLUE);
         g.fillOval(this.x,this.y,50,50);
-        panel.repaint();
+        try {
+            sleep(10);
+        } catch(InterruptedException e) {
+            e.printStackTrace();
+        }
+        g.setColor(panel.getBackground());
+        g.fillOval(this.x,this.y,50,50);
     }
 
     @Override
     public void run() {
         while (true) {
-            this.x = this.x + 1;
-            this.y = this.y + 1;
-            try {
-                sleep(10000);
-            } catch(InterruptedException e) {
-                e.printStackTrace();
-            }
+            if (this.x >= windowWidth - 50) xDir = -1;
+            if(this.x <= 0 + 50) xDir = 1;
+            if(this.y >= windowHeight - 50) yDir = -1;
+            if(this.y <= 0 + 50) yDir = 1;
+
+            this.x = this.x + xDir;
+            this.y = this.y + yDir;
             paint(panel.getGraphics());
         }
     }
