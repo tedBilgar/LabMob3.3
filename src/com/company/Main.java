@@ -13,13 +13,12 @@ public class Main {
 	    LabFrame myFrame = new LabFrame();
         myFrame.setVisible(true);
 
+        myFrame.getContentPane().add(jPanel);
+
 	    MyBalls myBalls = new MyBalls(jPanel, myFrame);
-	    myFrame.getContentPane().add(myBalls);
 	    Thread newThread = new Thread(myBalls);
 
-
         MyBalls myBalls2 = new MyBalls(jPanel, myFrame);
-        myFrame.getContentPane().add(myBalls2);
         Thread newThread2 = new Thread(myBalls2);
 
         newThread.start();
@@ -35,7 +34,7 @@ class LabFrame extends JFrame{
     }
 }
 
-class MyBalls extends JComponent implements Runnable{
+class MyBalls extends Thread{
     private JPanel panel;
     private int x;
     private int y;
@@ -55,18 +54,20 @@ class MyBalls extends JComponent implements Runnable{
     public void paint(Graphics g){
         g.setColor(Color.BLUE);
         g.fillOval(this.x,this.y,50,50);
+        panel.repaint();
     }
 
     @Override
     public void run() {
         while (true) {
             this.x = this.x + 1;
+            this.y = this.y + 1;
             try {
-                sleep(100);
+                sleep(10000);
             } catch(InterruptedException e) {
                 e.printStackTrace();
             }
-            repaint();
+            paint(panel.getGraphics());
         }
     }
 }
